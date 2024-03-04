@@ -1,0 +1,1 @@
+./odoo-bin --addons-path=addons,../enterprise/,../stock-transport-dipr/ -d rd-demo_stock1 -u stock_transport --dev=all
