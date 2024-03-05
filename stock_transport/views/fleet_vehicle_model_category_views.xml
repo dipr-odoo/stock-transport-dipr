@@ -49,4 +49,50 @@
     </record>
 
 
+    <record id="stock_picking_batch.stock_picking_batch_action" model="ir.actions.act_window">
+        <field name="view_mode">tree,kanban,form,graph,gantt</field>
+        <field name="context">{'graph_groupbys': ['scheduled_date','category_id']}</field>
+    </record>
+
+    <record id="stock_picking_batch_graph_view" model="ir.ui.view">
+        <field name="name">stock.picking.batch.graph.view</field>
+        <field name="model">stock.picking.batch</field>
+        <field name="arch" type="xml">
+            <graph string="batch_transfers" sample="1">
+                <field name="total_volume" type = "measure" />
+                <field name="total_weight" type = "measure" />
+                <field name="no_of_transfers" type="measure"/>
+                <field name="no_of_lines" type="measure"/>
+                <field name="volume_bar" invisible="1" />
+                <field name="weight_bar" invisible="1"/>
+
+                <field name = "category_id" />
+                <field name = "scheduled_date" interval="day"/>
+                <!-- <field name = "scheduled_date"/> -->
+                
+            </graph>
+        </field>
+    </record>
+   
+    <record id="view_stock_picking_batch_gantt" model="ir.ui.view">
+        <field name="name">stock.picking.batch.gantt.view</field>
+        <field name="model">stock.picking.batch</field>
+        <field name="arch" type="xml">
+            <gantt 
+                date_start="scheduled_date" 
+                date_stop="scheduled_date" 
+                default_group_by='dock_id,vehicle_id'
+                default_scale="week"
+                decoration-info="state == 'draft'"
+                decoration-success="state == 'done'"
+                color="dock_id"
+            >
+            <field name='state' invisible='1'/>
+            </gantt>
+        </field>
+    </record>
+
+    
+    
+
 </odoo>

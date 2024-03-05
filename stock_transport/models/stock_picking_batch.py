@@ -12,7 +12,19 @@ class StockPickingBatch(models.Model):
     total_weight= fields.Float(compute="_compute_weight", store = True)
     volume_bar = fields.Float(compute="_compute_vb", store=True)
     total_volume = fields.Float(compute="_compute_volume", store=True)
+    no_of_transfers = fields.Integer(compute="_compute_no_of_transfers", store=True)
+    no_of_lines = fields.Integer(compute="_compute_no_of_lines", store=True)
+    
+    @api.depends('picking_ids')
+    def _compute_no_of_transfers(self):
+        for record in self:
+            record.no_of_transfers = len(record.picking_ids)
 
+    @api.depends('move_line_ids')
+    def _compute_no_of_lines(self):
+        for record in self:
+            record.no_of_lines = len(record.move_line_ids)
+    
 
     @api.depends("vehicle_id")
     def _compute_cat(self):
@@ -50,6 +62,15 @@ class StockPickingBatch(models.Model):
                 record.volume_bar = (record.total_volume / record.category_id.max_volume) * 100
             else:
                 record.volume_bar = 0.0
+    
+    def _compute_display_name(self):
+        for record in self:
+            record.display_name = record.name
+            if record.total_weight:
+                record.display_name += f' ({record.total_weight} kg)'
+            if record.total_volume:
+                record.display_name += f' ({record.total_volume} m^3)'
+
 
 
 
